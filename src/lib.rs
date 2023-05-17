@@ -1,8 +1,17 @@
+#![warn(rust_2018_idioms)]
+#![warn(missing_debug_implementations)]
+#![warn(missing_docs)]
+
+//! Find all books that have Rust in their name and save the title, poster URL,
+//! and book URL to a books.csv file and the poster to an image with the same name as it's on the site.
+
 use anyhow::{Result, Ok};
 use reqwest::Url;
 use serde::Serialize;
 use voyager::{scraper::Selector, Scraper};
 
+/// Describes selectors for each part of the shop item.
+#[derive(Debug)]
 pub struct BookScraper {
   item_selector: Selector,
   image_selector: Selector,
@@ -23,16 +32,23 @@ impl Default for BookScraper {
   }
 }
 
+/// Serializable shop item.
 #[derive(Debug, Serialize)]
 pub struct ShopItem {
+  /// Book title.
   pub title: String,
+  /// Book's image url.
   pub image_url: String,
+  /// Link to the book in the shop.
   pub link: String,
 }
 
+/// State of the scrapper.
 #[derive(Debug)]
 pub enum StoreState {
+  /// Scrape a book.
   Book(ShopItem),
+  /// Change page.
   Page(usize)
 }
 
